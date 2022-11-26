@@ -41,80 +41,22 @@ if (isset($_POST['btnSave'])) {
     $vb_nguoiky_hoten = $_POST['vb_nguoiky_hoten'];
     $vb_nguoiky_chucdanh = $_POST['vb_nguoiky_chucdanh'];
     $vb_ngayky = $_POST['vb_ngayky'];
-    $vb_ngayhieuluc = $_POST['vb_ngayhieuluc'];
-    $vb_taptin_dinhkem;
+    $vb_ngayhieuluc = empty($_POST['vb_ngayhieuluc']) ? 'NULL' : "'" . $_POST['vb_ngayhieuluc'] . "'";
+    $vb_taptin_dinhkem = "";
+    // dd($vb_so,
+    //     $vb_tieude,
+    //     $vb_trichyeu,
+    //     $vb_phongban_banhanh_id,
+    //     $vb_nguoiky_hoten,
+    //     $vb_nguoiky_chucdanh,
+    //     $vb_ngayky,
+    //     $vb_ngayhieuluc,
+    //     $vb_taptin_dinhkem,
+    // );
 
     // Kiểm tra ràng buộc dữ liệu (Validation)
     // Tạo biến lỗi để chứa thông báo lỗi
     $errors = [];
-    // ### Số văn bản
-    // required
-    if (empty($vb_so)) {
-        $errors['vb_so'][] = [
-            'rule' => 'required',
-            'rule_value' => true,
-            'value' => $vb_so,
-            'msg' => 'Vui lòng nhập mã Phòng ban'
-        ];
-    }
-    // minlength 3
-    if (!empty($vb_so) && strlen($vb_so) < 3) {
-        $errors['vb_so'][] = [
-            'rule' => 'minlength',
-            'rule_value' => 3,
-            'value' => $vb_so,
-            'msg' => 'Mã Phòng ban phải có ít nhất 3 ký tự'
-        ];
-    }
-    // maxlength 50
-    if (!empty($vb_so) && strlen($vb_so) > 50) {
-        $errors['vb_so'][] = [
-            'rule' => 'maxlength',
-            'rule_value' => 50,
-            'value' => $vb_so,
-            'msg' => 'Mã Phòng ban không được vượt quá 50 ký tự'
-        ];
-    }
-
-    // ### Tên phòng ban
-    // required
-    if (empty($vb_tieude)) {
-        $errors['vb_tieude'][] = [
-            'rule' => 'required',
-            'rule_value' => true,
-            'value' => $vb_tieude,
-            'msg' => 'Vui lòng nhập tên Phòng ban'
-        ];
-    }
-    // minlength 3
-    if (!empty($vb_tieude) && strlen($vb_tieude) < 3) {
-        $errors['vb_tieude'][] = [
-            'rule' => 'minlength',
-            'rule_value' => 3,
-            'value' => $vb_tieude,
-            'msg' => 'Tên Phòng ban phải có ít nhất 3 ký tự'
-        ];
-    }
-    // maxlength 255
-    if (!empty($vb_tieude) && strlen($vb_tieude) > 255) {
-        $errors['vb_tieude'][] = [
-            'rule' => 'maxlength',
-            'rule_value' => 255,
-            'value' => $vb_tieude,
-            'msg' => 'Tên Phòng ban không được vượt quá 255 ký tự'
-        ];
-    }
-
-    // ### Diễn giải phòng ban
-    // maxlength 500
-    if (!empty($vb_trichyeu) && strlen($vb_trichyeu) > 500) {
-        $errors['vb_trichyeu'][] = [
-            'rule' => 'maxlength',
-            'rule_value' => 500,
-            'value' => $vb_trichyeu,
-            'msg' => 'Diễn giải Phòng ban không được vượt quá 500 ký tự'
-        ];
-    }
 
     // dd($errors);
     if (!empty($errors)) {
@@ -127,9 +69,38 @@ if (isset($_POST['btnSave'])) {
             'vb_trichyeu_oldvalue' => $vb_trichyeu,
         ]);
     } else { // Nếu không có lỗi dữ liệu sẽ thực thi câu lệnh SQL
+
+        // Nếu người dùng có chọn file để upload
+        if (isset($_FILES['vb_taptin_dinhkem']))
+        {
+            // Đường dẫn để chứa thư mục upload trên ứng dụng web của chúng ta. Các bạn có thể tùy chỉnh theo ý các bạn.
+            // Ví dụ: các file upload sẽ được lưu vào thư mục ../../assets/uploads
+            $upload_dir = "./../../assets/uploads/vanban/";
+
+            // Đối với mỗi file, sẽ có các thuộc tính như sau:
+            // $_FILES['vb_taptin_dinhkem']['name']     : Tên của file chúng ta upload
+            // $_FILES['vb_taptin_dinhkem']['type']     : Kiểu file mà chúng ta upload (hình ảnh, word, excel, pdf, txt, ...)
+            // $_FILES['vb_taptin_dinhkem']['tmp_name'] : Đường dẫn đến file tạm trên web server
+            // $_FILES['vb_taptin_dinhkem']['error']    : Trạng thái của file chúng ta upload, 0 => không có lỗi
+            // $_FILES['vb_taptin_dinhkem']['size']     : Kích thước của file chúng ta upload
+
+            // Nếu file upload bị lỗi, tức là thuộc tính error > 0
+            if ($_FILES['vb_taptin_dinhkem']['error'] > 0)
+            {
+                echo 'File Upload Bị Lỗi';die;
+            }
+            else{
+                // Tiến hành di chuyển file từ thư mục tạm trên server vào thư mục chúng ta muốn chứa các file uploads
+                // Ví dụ: move file từ C:\xampp\tmp\php6091.tmp -> C:/xampp/htdocs/learning.nentang.vn/assets/uploads/hoahong.jpg
+                $vb_taptin_dinhkem = date('YmdHis') . '_' . $_FILES['vb_taptin_dinhkem']['name'];
+                move_uploaded_file($_FILES['vb_taptin_dinhkem']['tmp_name'], $upload_dir.$vb_taptin_dinhkem);
+                echo 'File Uploaded';
+            }
+        }
+
         // Câu lệnh INSERT
         $sql = "INSERT INTO vanban (vb_so, vb_tieude, vb_trichyeu, vb_phongban_banhanh_id, vb_nguoiky_hoten, vb_nguoiky_chucdanh, vb_ngayky, vb_ngayhieuluc, vb_taptin_dinhkem)
-                VALUES ('', '', '', 0, '', '', NOW(), NOW(), '')";
+                VALUES ('$vb_so', '$vb_tieude', '$vb_trichyeu', $vb_phongban_banhanh_id, '$vb_nguoiky_hoten', '$vb_nguoiky_chucdanh', '$vb_ngayky', $vb_ngayhieuluc, '$vb_taptin_dinhkem')";
 
         // Thực thi INSERT
         mysqli_query($conn, $sql);

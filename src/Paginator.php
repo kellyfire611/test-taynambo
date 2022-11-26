@@ -43,7 +43,11 @@ class Paginator
         $this->query = $query;
 
         $rs = $this->conn->query($this->query);
-        $this->total = $rs->num_rows;
+        if(!empty($rs)) {
+            $this->total = $rs->num_rows;
+        } else {
+            $this->total = 0;
+        }
     }
 
     /**
@@ -63,8 +67,10 @@ class Paginator
         $rs             = $this->conn->query($query);
 
         $results = [];
-        while ($row = $rs->fetch_assoc()) {
-            $results[]  = $row;
+        if(!empty($rs)) {
+            while ($row = $rs->fetch_assoc()) {
+                $results[]  = $row;
+            }
         }
 
         $result         = new stdClass();

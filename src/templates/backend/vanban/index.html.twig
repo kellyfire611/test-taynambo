@@ -15,6 +15,63 @@ Danh sách Văn bản
 
 {# Nội dung trong block content #}
 {% block content %}
+<!-- Khung tìm kiếm -->
+<form name="frmSearch" id="frmSearch" method="get" action="/backend/vanban/index.php">
+    <div class="form-row">
+        <div class="form-group col-4">
+            <label for="keyword_vb_so">Số Văn bản</label>
+            <input type="text" class="form-control" id="keyword_vb_so" name="keyword_vb_so" placeholder="Số Văn bản" value="{{ keyword_vb_so }}">
+        </div>
+        <div class="form-group col-4">
+            <label for="keyword_vb_tieude">Tiêu đề Văn bản</label>
+            <input type="text" class="form-control" id="keyword_vb_tieude" name="keyword_vb_tieude" placeholder="Tiêu đề Văn bản" value="{{ keyword_vb_tieude }}">
+        </div>
+        <div class="form-group col-4">
+            <label for="keyword_vb_trichyeu">Trích yếu Văn bản</label>
+            <input type="text" class="form-control" id="keyword_vb_trichyeu" name="keyword_vb_trichyeu" placeholder="Trích yếu Văn bản" value="{{ keyword_vb_trichyeu }}">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-4">
+            <label for="keyword_vb_phongban_banhanh_id">Phòng/Ban ban hành</label>
+            <select name="keyword_vb_phongban_banhanh_id" class="form-control">
+                <option value="">Chọn phòng ban</option>
+            {% for phongban in dataPhongBan %}
+                {% if phongban.pb_id == keyword_vb_phongban_banhanh_id %}
+                    <option selected value="{{ phongban.pb_id }}">{{ phongban.pb_ten }}</option>
+                {% else %}
+                    <option value="{{ phongban.pb_id }}">{{ phongban.pb_ten }}</option>
+                {% endif %}
+            {% endfor %}
+            </select>
+        </div>
+        <div class="form-group col-4">
+            <label for="keyword_vb_nguoiky_hoten">Người ký tên Văn bản</label>
+            <input type="text" class="form-control" id="keyword_vb_nguoiky_hoten" name="keyword_vb_nguoiky_hoten" placeholder="Người ký tên Văn bản" value="{{ keyword_vb_nguoiky_hoten }}">
+        </div>
+        <div class="form-group col-4">
+            <label for="keyword_vb_nguoiky_chucdanh">Chức danh Người ký tên Văn bản</label>
+            <input type="text" class="form-control" id="keyword_vb_nguoiky_chucdanh" name="keyword_vb_nguoiky_chucdanh" placeholder="Chức danh Người ký tên Văn bản" value="{{ keyword_vb_nguoiky_chucdanh }}">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-6">
+            <label for="keyword_vb_ngayky">Ngày ký</label>
+            <input type="text" class="form-control" id="keyword_vb_ngayky" name="keyword_vb_ngayky" placeholder="Ngày ký Văn bản" value="{{ keyword_vb_ngayky }}">
+        </div>
+        <div class="form-group col-6">
+            <label for="keyword_vb_ngayhieuluc">Ngày hiệu lực</label>
+            <input type="text" class="form-control" id="keyword_vb_ngayhieuluc" name="keyword_vb_ngayhieuluc" placeholder="Ngày hiệu lực Văn bản" value="{{ keyword_vb_ngayhieuluc }}">
+        </div>
+    </div>
+
+    <button class="btn btn-success" name="btnSearch"><span data-feather="search"></span> Tìm kiếm</button>
+    <a class="btn btn-danger" name="btnClear" href="index.php">
+        <span data-feather="remove"></span> Xóa tìm kiếm
+    </a>
+</form>
+
+
 <!-- Nút thêm mới, bấm vào sẽ hiển thị form nhập thông tin Thêm mới -->
 <a href="create" class="btn btn-primary">
     <span data-feather="plus"></span> Thêm mới
@@ -34,12 +91,12 @@ Danh sách Văn bản
             <td><b>{{ vanban.vb_tieude }}</b></td>
             <td rowspan="2" style="vertical-align: middle;">
                 <!-- Nút sửa, bấm vào sẽ hiển thị form hiệu chỉnh thông tin dựa vào khóa chính `id` -->
-                <a href="edit.php?id={{ vanban.pb_id }}" class="btn btn-warning">
+                <a href="edit.php?id={{ vanban.vb_id }}" class="btn btn-warning">
                     <span data-feather="edit"></span> Sửa
                 </a>
 
                 <!-- Nút xóa, bấm vào sẽ xóa thông tin dựa vào khóa chính `id` -->
-                <button type="button" class="btn btn-danger btnDelete" data-id="{{ vanban.pb_id }}" data-url="delete.php?id={{ vanban.pb_id }}">
+                <button type="button" class="btn btn-danger btnDelete" data-id="{{ vanban.vb_id }}" data-url="delete.php?id={{ vanban.vb_id }}">
                     <span data-feather="delete"></span> Xóa
                 </button>
             </td>
@@ -51,14 +108,17 @@ Danh sách Văn bản
                     <li><b>Phòng/Ban ban hành: </b>{{ vanban.pb_ten }}</li>
                     <li><b>Người ký - chức danh: </b>{{ vanban.vb_nguoiky_hoten }} - {{ vanban.vb_nguoiky_chucdanh }}</li>
                     <li><b>Ngày ký: </b>{{ vanban.vb_ngayky | date('d/m/Y') }}</li>
-                    <li><b>Ngày hiệu lực: </b>{{ vanban.vb_ngayhieuluc | date('d/m/Y H:i:s') }}</li>
-                    <li><b>Tập tin đính kèm: </b></li>
+                    <li><b>Ngày hiệu lực: </b>{{ vanban.vb_ngayhieuluc is empty ? "" : vanban.vb_ngayhieuluc | date('d/m/Y H:i:s') }}</li>
+                    <li><b>Tập tin đính kèm: </b>
+                        <a href="/assets/uploads/vanban/{{ vanban.vb_taptin_dinhkem }}" target="_blank">{{ vanban.vb_taptin_dinhkem }}</a>
+                    </li>
                 </ul>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
+<p>Danh sách được sắp xếp theo Ngày ban hành gần nhất.</p>
 {{ paginator.createLinks()|raw }}
 
 {% endblock %}
@@ -67,6 +127,21 @@ Danh sách Văn bản
 {% block customscripts %}
 <script>
     $(document).ready(function() {
+        $("#keyword_vb_ngayky").flatpickr({
+            enableTime: false,
+            allowInput: true,
+            altInput: true,
+            altFormat: "d/m/Y",
+            dateFormat: "Y-m-d",
+        });
+        $("#keyword_vb_ngayhieuluc").flatpickr({
+            enableTime: true,
+            allowInput: true,
+            altInput: true,
+            altFormat: "d/m/Y H:i",
+            dateFormat: "Y-m-d H:i",
+        });
+
         $(".btnDelete").on("click", function() {
             // Lấy dữ liệu từ nút Xóa đã click
             var id = $(this).data("id");

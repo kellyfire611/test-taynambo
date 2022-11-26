@@ -340,3 +340,9 @@ Footer
     font-size: 14px;
   }
 }
+
+#frmSearch {
+  border: 1px dashed red;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}

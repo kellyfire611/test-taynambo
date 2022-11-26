@@ -31,7 +31,7 @@ Thêm mới Văn bản
 </div>
 {% endif %}
 
-<form name="frmCreate" id="frmCreate" method="post" action="/backend/vanban/create.php">
+<form name="frmCreate" id="frmCreate" method="post" action="/backend/vanban/create.php" enctype="multipart/form-data">
     <div class="form-group">
         <label for="vb_so">Số Văn bản</label>
         <input type="text" class="form-control" id="vb_so" name="vb_so" placeholder="Số Văn bản" value="{{ vb_so_oldvalue }}">
@@ -73,6 +73,10 @@ Thêm mới Văn bản
             <input type="text" class="form-control" id="vb_ngayhieuluc" name="vb_ngayhieuluc" placeholder="Ngày hiệu lực Văn bản" value="{{ vb_ngayhieuluc_oldvalue }}">
         </div>
     </div>
+    <div class="form-group">
+        <label for="vb_taptin_dinhkem">Tập tin đính kèm</label>
+        <input type="file" class="form-control" id="vb_taptin_dinhkem" name="vb_taptin_dinhkem">
+    </div>
 
     <a class="btn btn-secondary" href="/backend/vanban/">Quay về Danh sách</a>
     <button class="btn btn-primary" name="btnSave">Lưu</button>
@@ -83,10 +87,25 @@ Thêm mới Văn bản
 {% block customscripts %}
 <script>
     $(document).ready(function () {
+        $("#vb_ngayky").flatpickr({
+            enableTime: false,
+            allowInput: true,
+            altInput: true,
+            altFormat: "d/m/Y",
+            dateFormat: "Y-m-d",
+        });
+        $("#vb_ngayhieuluc").flatpickr({
+            enableTime: true,
+            allowInput: true,
+            altInput: true,
+            altFormat: "d/m/Y H:i",
+            dateFormat: "Y-m-d H:i",
+        });
+
         $("#frmCreate").validate({
             rules: {
                 vb_so: {
-                    minlength: 3,
+                    minlength: 2,
                     maxlength: 50
                 },
                 vb_tieude: {
@@ -111,7 +130,7 @@ Thêm mới Văn bản
             },
             messages: {
                 vb_so: {
-                    minlength: "Số Văn bản phải có ít nhất 3 ký tự",
+                    minlength: "Số Văn bản phải có ít nhất 2 ký tự",
                     maxlength: "Số Văn bản không được vượt quá 50 ký tự"
                 },
                 vb_tieude: {

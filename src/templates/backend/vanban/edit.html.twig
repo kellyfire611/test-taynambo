@@ -3,13 +3,13 @@
 
 {# Nội dung trong block title #}
 {% block title %}
-Sửa Phòng ban
+Sửa Văn bản
 {% endblock %}
 {# End Nội dung trong block title #}
 
 {# Nội dung trong block headline #}
 {% block headline %}
-Sửa Phòng ban
+Sửa Văn bản
 {% endblock %}
 {# End Nội dung trong block headline #}
 
@@ -31,20 +31,59 @@ Sửa Phòng ban
 </div>
 {% endif %}
 
-<form name="frmEdit" id="frmEdit" method="post" action="/backend/phongban/edit.php?id={{ phongbanRow.pb_id }}">
+<form name="frmEdit" id="frmEdit" method="post" action="/backend/vanban/edit.php?id={{ vanbanRow.vb_id }}" enctype="multipart/form-data">
     <div class="form-group">
-        <label for="pb_ma">Mã Phòng ban</label>
-        <input type="text" class="form-control" id="pb_ma" name="pb_ma" placeholder="Mã Phòng ban" value="{{ phongbanRow.pb_ma }}">
+        <label for="vb_so">Số Văn bản</label>
+        <input type="text" class="form-control" id="vb_so" name="vb_so" placeholder="Số Văn bản" value="{{ vanbanRow.vb_so }}">
+        <small id="vb_soHelp" class="form-text text-muted">Số văn bản có thể để trống.</small>
     </div>
     <div class="form-group">
-        <label for="pb_ten">Tên Phòng ban</label>
-        <input type="text" class="form-control" id="pb_ten" name="pb_ten" placeholder="Tên Phòng ban" value="{{ phongbanRow.pb_ten }}">
+        <label for="vb_tieude">Tiêu đề Văn bản</label>
+        <input type="text" class="form-control" id="vb_tieude" name="vb_tieude" placeholder="Tiêu đề Văn bản" value="{{ vanbanRow.vb_tieude }}">
     </div>
     <div class="form-group">
-        <label for="pb_diengiai">Mô tả Phòng ban</label>
-        <textarea class="form-control" id="pb_diengiai" name="pb_diengiai" rows="5">{{ phongbanRow.pb_diengiai }}</textarea>
+        <label for="vb_trichyeu">Trích yếu Văn bản</label>
+        <textarea class="form-control" id="vb_trichyeu" name="vb_trichyeu" rows="5">{{ vanbanRow.vb_trichyeu }}</textarea>
     </div>
-    <a class="btn btn-secondary" href="/backend/phongban/">Quay về Danh sách</a>
+    <div class="form-group">
+        <label for="vb_phongban_banhanh_id">Phòng/Ban ban hành</label>
+        <select name="vb_phongban_banhanh_id" class="form-control">
+        {% for phongban in dataPhongBan %}
+            {% if phongban.pb_id == vanbanRow.vb_phongban_banhanh_id %}
+                <option selected value="{{ phongban.pb_id }}">{{ phongban.pb_ten }}</option>
+            {% else %}
+                <option value="{{ phongban.pb_id }}">{{ phongban.pb_ten }}</option>
+            {% endif %}
+        {% endfor %}
+        </select>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-6">
+            <label for="vb_nguoiky_hoten">Người ký tên Văn bản</label>
+            <input type="text" class="form-control" id="vb_nguoiky_hoten" name="vb_nguoiky_hoten" placeholder="Người ký tên Văn bản" value="{{ vanbanRow.vb_nguoiky_hoten }}">
+        </div>
+        <div class="form-group col-6">
+            <label for="vb_nguoiky_chucdanh">Chức danh Người ký tên Văn bản</label>
+            <input type="text" class="form-control" id="vb_nguoiky_chucdanh" name="vb_nguoiky_chucdanh" placeholder="Chức danh Người ký tên Văn bản" value="{{ vanbanRow.vb_nguoiky_chucdanh }}">
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-6">
+            <label for="vb_ngayky">Ngày ký</label>
+            <input type="text" class="form-control" id="vb_ngayky" name="vb_ngayky" placeholder="Ngày ký Văn bản" value="{{ vanbanRow.vb_ngayky }}">
+        </div>
+        <div class="form-group col-6">
+            <label for="vb_ngayhieuluc">Ngày hiệu lực</label>
+            <input type="text" class="form-control" id="vb_ngayhieuluc" name="vb_ngayhieuluc" placeholder="Ngày hiệu lực Văn bản" value="{{ vanbanRow.vb_ngayhieuluc }}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="vb_taptin_dinhkem">Tập tin đính kèm</label>
+        <a href="/assets/uploads/vanban/{{ vanbanRow.vb_taptin_dinhkem }}" target="_blank">{{ vanbanRow.vb_taptin_dinhkem }}</a>
+        <input type="file" class="form-control" id="vb_taptin_dinhkem" name="vb_taptin_dinhkem">
+    </div>
+
+    <a class="btn btn-secondary" href="/backend/vanban/">Quay về Danh sách</a>
     <button class="btn btn-primary" name="btnSave">Lưu</button>
 </form>
 {% endblock %}
@@ -53,35 +92,68 @@ Sửa Phòng ban
 {% block customscripts %}
 <script>
     $(document).ready(function () {
+        $("#vb_ngayky").flatpickr({
+            enableTime: false,
+            allowInput: true,
+            altInput: true,
+            altFormat: "d/m/Y",
+            dateFormat: "Y-m-d",
+        });
+        $("#vb_ngayhieuluc").flatpickr({
+            enableTime: true,
+            allowInput: true,
+            altInput: true,
+            altFormat: "d/m/Y H:i",
+            dateFormat: "Y-m-d H:i",
+        });
+
         $("#frmEdit").validate({
             rules: {
-                pb_ma: {
-                    required: true,
-                    minlength: 3,
+                vb_so: {
+                    minlength: 2,
                     maxlength: 50
                 },
-                pb_ten: {
+                vb_tieude: {
                     required: true,
                     minlength: 3,
-                    maxlength: 255
+                    maxlength: 50000
                 },
-                pb_diengiai: {
+                vb_trichyeu: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 50000
+                },
+                vb_phongban_banhanh_id: {
+                    required: true,
+                },
+                vb_nguoiky_hoten: {
+                    maxlength: 500
+                },
+                vb_nguoiky_chucdanh: {
                     maxlength: 500
                 }
             },
             messages: {
-                pb_ma: {
-                    required: "Vui lòng nhập mã Phòng ban",
-                    minlength: "Mã Phòng ban phải có ít nhất 3 ký tự",
-                    maxlength: "Mã Phòng ban không được vượt quá 50 ký tự"
+                vb_so: {
+                    minlength: "Số Văn bản phải có ít nhất 2 ký tự",
+                    maxlength: "Số Văn bản không được vượt quá 50 ký tự"
                 },
-                pb_ten: {
-                    required: "Vui lòng nhập tên Phòng ban",
-                    minlength: "Tên Phòng ban phải có ít nhất 3 ký tự",
-                    maxlength: "Tên Phòng ban không được vượt quá 255 ký tự"
+                vb_tieude: {
+                    required: "Vui lòng nhập tiêu đề Văn bản",
+                    minlength: "Tiêu đề Văn bản phải có ít nhất 3 ký tự",
+                    maxlength: "Tiêu đề Văn bản không được vượt quá 50000 ký tự"
                 },
-                pb_diengiai: {
-                    maxlength: "Diễn giải cho Phòng ban không được vượt quá 500 ký tự"
+                vb_trichyeu: {
+                    maxlength: "Trích yếu cho Văn bản không được vượt quá 50000 ký tự"
+                },
+                vb_phongban_banhanh_id: {
+                    required: "Vui lòng chọn Phòng/Ban ban hành"
+                },
+                vb_nguoiky_hoten: {
+                    maxlength: "Họ tên người ký văn bản không được vượt quá 500 ký tự"
+                },
+                vb_nguoiky_chucdanh: {
+                    maxlength: "Chức danh người ký văn bản không được vượt quá 500 ký tự"
                 },
             },
             errorElement: "em",
