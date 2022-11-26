@@ -82,6 +82,18 @@ Sửa Văn bản
         <a href="/assets/uploads/vanban/{{ vanbanRow.vb_taptin_dinhkem }}" target="_blank">{{ vanbanRow.vb_taptin_dinhkem }}</a>
         <input type="file" class="form-control" id="vb_taptin_dinhkem" name="vb_taptin_dinhkem">
     </div>
+    <div class="form-group">
+        <label for="vb_lienquan">Các văn bản cũ liên quan</label>
+        <select class="form-control" id="vb_lienquan" name="vb_lienquan[]" multiple="multiple">
+            {% for vanban in dataVanBan %}
+                {% if vanban.vb_id in vanbanRow.vb_lienquan_arr %}
+                <option selected value="{{ vanban.vb_id }}">{{ vanban.vb_tieude }}</option>
+                {% else %}
+                <option value="{{ vanban.vb_id }}">{{ vanban.vb_tieude }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
 
     <a class="btn btn-secondary" href="/backend/vanban/">Quay về Danh sách</a>
     <button class="btn btn-primary" name="btnSave">Lưu</button>
@@ -106,6 +118,7 @@ Sửa Văn bản
             altFormat: "d/m/Y H:i",
             dateFormat: "Y-m-d H:i",
         });
+        $('#vb_lienquan').select2();
 
         $("#frmEdit").validate({
             rules: {

@@ -39,6 +39,31 @@ $sqlSelect = "SELECT * FROM `vanban` WHERE vb_id=$vb_id;";
 // 3. Thực thi câu truy vấn SQL để lấy về dữ liệu ban đầu của record cần update
 $resultSelect = mysqli_query($conn, $sqlSelect);
 $vanbanRow = mysqli_fetch_array($resultSelect, MYSQLI_ASSOC); // 1 record
+$vanbanRow['vb_lienquan_arr'] = explode(',', $vanbanRow["vb_lienquan"]);
+
+/* --- 
+   --- 2.Truy vấn dữ liệu Văn bản
+   --- 
+*/
+// Chuẩn bị câu truy vấn
+$sqlVanBan = "select * from `vanban`";
+
+// Thực thi câu truy vấn SQL để lấy về dữ liệu
+$resultVanBan = mysqli_query($conn, $sqlVanBan);
+
+// Khi thực thi các truy vấn dạng SELECT, dữ liệu lấy về cần phải phân tích để sử dụng
+// Thông thường, chúng ta sẽ sử dụng vòng lặp while để duyệt danh sách các dòng dữ liệu được SELECT
+// Ta sẽ tạo 1 mảng array để chứa các dữ liệu được trả về
+$dataVanBan = [];
+while($rowVanBan = mysqli_fetch_array($resultVanBan, MYSQLI_ASSOC))
+{
+    $dataVanBan[] = array(
+        'vb_id' => $rowVanBan['vb_id'],
+        'vb_so' => $rowVanBan['vb_so'],
+        'vb_tieude' => $rowVanBan['vb_tieude'],
+    );
+}
+/* --- End Truy vấn dữ liệu Văn bản --- */
 
 // 2. Nếu người dùng có bấm nút Đăng ký thì thực thi câu lệnh UPDATE
 if (isset($_POST['btnSave'])) {
@@ -52,6 +77,12 @@ if (isset($_POST['btnSave'])) {
     $vb_ngayky = $_POST['vb_ngayky'];
     $vb_ngayhieuluc = $_POST['vb_ngayhieuluc'];
     $vb_taptin_dinhkem = $vanbanRow['vb_taptin_dinhkem'];
+    $vb_lienquan = $_POST['vb_lienquan'];
+    if(empty($vb_lienquan)) {
+        $vb_lienquan_str = 'NULL';
+    } else {
+        $vb_lienquan_str = "'" . implode(',', $vb_lienquan) . "'";
+    }
     // dd($vb_so,
     //     $vb_tieude,
     //     $vb_trichyeu,
@@ -61,6 +92,7 @@ if (isset($_POST['btnSave'])) {
     //     $vb_ngayky,
     //     $vb_ngayhieuluc,
     //     $vb_taptin_dinhkem,
+    //     $vb_lienquan_str,
     // );
 
     // Kiểm tra ràng buộc dữ liệu (Validation)
@@ -125,7 +157,8 @@ if (isset($_POST['btnSave'])) {
             vb_nguoiky_chucdanh='$vb_nguoiky_chucdanh',
             vb_ngayky='$vb_ngayky',
             vb_ngayhieuluc='$vb_ngayhieuluc',
-            vb_taptin_dinhkem='$vb_taptin_dinhkem'
+            vb_taptin_dinhkem='$vb_taptin_dinhkem',
+            vb_lienquan=$vb_lienquan_str
         WHERE vb_id=$vb_id";
 
         // Thực thi UPDATE
@@ -141,6 +174,7 @@ if (isset($_POST['btnSave'])) {
     // Yêu cầu `Twig` vẽ giao diện được viết trong file `backend/vanban/edit.html.twig`
     echo $twig->render('backend/vanban/edit.html.twig', [
         'dataPhongBan' => $dataPhongBan,
+        'dataVanBan' => $dataVanBan,
         'vanbanRow' => $vanbanRow,
     ]);
 }

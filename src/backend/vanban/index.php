@@ -100,6 +100,37 @@ $page       = (isset($_GET['page'])) ? $_GET['page'] : Config::$PAGE;
 $paginator  = new Paginator($twig, $conn, $sql);
 $data       = $paginator->getData($limit, $page);
 
+foreach($data->data as $index => $row) {
+    $vb_lienquan_ids = $row["vb_lienquan"];
+    if(!empty($vb_lienquan_ids)) {
+        /* --- 
+        --- 2.Truy vấn dữ liệu Văn bản liên quan
+        --- 
+        */
+        // Chuẩn bị câu truy vấn
+        $sqlVanBanLienQuan = "select * from `vanban` WHERE vb_id IN ($vb_lienquan_ids)";
+
+        // Thực thi câu truy vấn SQL để lấy về dữ liệu
+        $resultVanBanLienQuan = mysqli_query($conn, $sqlVanBanLienQuan);
+
+        // Khi thực thi các truy vấn dạng SELECT, dữ liệu lấy về cần phải phân tích để sử dụng
+        // Thông thường, chúng ta sẽ sử dụng vòng lặp while để duyệt danh sách các dòng dữ liệu được SELECT
+        // Ta sẽ tạo 1 mảng array để chứa các dữ liệu được trả về
+        $dataVanBanLienQuan = [];
+        while($rowVanBanLienQuan = mysqli_fetch_array($resultVanBanLienQuan, MYSQLI_ASSOC))
+        {
+            $dataVanBanLienQuan[] = array(
+                'vb_id' => $rowVanBanLienQuan['vb_id'],
+                'vb_so' => $rowVanBanLienQuan['vb_so'],
+                'vb_tieude' => $rowVanBanLienQuan['vb_tieude'],
+                'vb_taptin_dinhkem' => $rowVanBanLienQuan['vb_taptin_dinhkem'],
+            );
+        }
+        $data->data[$index]['vb_lienquan_relationship'] = $dataVanBanLienQuan;
+        /* --- End Truy vấn dữ liệu Văn bản --- */
+    }
+}
+
 // Yêu cầu `Twig` vẽ giao diện được viết trong file `backend/vanban/index.html.twig`
 // với dữ liệu truyền vào file giao diện được đặt tên là `dataVanBan`
 echo $twig->render('backend/vanban/index.html.twig', [

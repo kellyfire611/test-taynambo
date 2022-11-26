@@ -81,6 +81,7 @@ Danh sách Văn bản
         <tr>
             <th>Số Văn bản</th>
             <th>Tiêu đề Văn bản</th>
+            <th>Ngày hiệu lực</th>
             <th>Hành động</th>
         </tr>
     </thead>
@@ -89,6 +90,9 @@ Danh sách Văn bản
         <tr>
             <td><b>{{ vanban.vb_so }}<b/></td>
             <td><b>{{ vanban.vb_tieude }}</b></td>
+            <td>
+                <span class="badge badge-primary">{{ vanban.vb_ngayhieuluc is empty ? "" : vanban.vb_ngayhieuluc | date('d/m/Y H:i:s') }}</span>
+            </td>
             <td rowspan="2" style="vertical-align: middle;">
                 <!-- Nút sửa, bấm vào sẽ hiển thị form hiệu chỉnh thông tin dựa vào khóa chính `id` -->
                 <a href="edit.php?id={{ vanban.vb_id }}" class="btn btn-warning">
@@ -112,13 +116,25 @@ Danh sách Văn bản
                     <li><b>Tập tin đính kèm: </b>
                         <a href="/assets/uploads/vanban/{{ vanban.vb_taptin_dinhkem }}" target="_blank">{{ vanban.vb_taptin_dinhkem }}</a>
                     </li>
+                    {% if vanban.vb_lienquan_relationship > 0 %}
+                    <li>
+                        <b>Các văn bản liên quan:</b>
+                        <ul>
+                            {% for vanbanlienquan in vanban.vb_lienquan_relationship %}
+                            <li>
+                                <i>{{ vanbanlienquan.vb_so }}</i> - <a href="/assets/uploads/vanban/{{ vanbanlienquan.vb_taptin_dinhkem }}" target="_blank">{{ vanbanlienquan.vb_taptin_dinhkem }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    {% endif %}
                 </ul>
             </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-<p>Danh sách được sắp xếp theo Ngày ban hành gần nhất.</p>
+<p style="color: red; font-style: italic;">Danh sách được sắp xếp theo Ngày ban hành gần nhất.</p>
 {{ paginator.createLinks()|raw }}
 
 {% endblock %}

@@ -31,6 +31,30 @@ while($rowPhongBan = mysqli_fetch_array($resultPhongBan, MYSQLI_ASSOC))
 }
 /* --- End Truy vấn dữ liệu Phòng ban --- */
 
+/* --- 
+   --- 2.Truy vấn dữ liệu Văn bản
+   --- 
+*/
+// Chuẩn bị câu truy vấn
+$sqlVanBan = "select * from `vanban`";
+
+// Thực thi câu truy vấn SQL để lấy về dữ liệu
+$resultVanBan = mysqli_query($conn, $sqlVanBan);
+
+// Khi thực thi các truy vấn dạng SELECT, dữ liệu lấy về cần phải phân tích để sử dụng
+// Thông thường, chúng ta sẽ sử dụng vòng lặp while để duyệt danh sách các dòng dữ liệu được SELECT
+// Ta sẽ tạo 1 mảng array để chứa các dữ liệu được trả về
+$dataVanBan = [];
+while($rowVanBan = mysqli_fetch_array($resultVanBan, MYSQLI_ASSOC))
+{
+    $dataVanBan[] = array(
+        'vb_id' => $rowVanBan['vb_id'],
+        'vb_so' => $rowVanBan['vb_so'],
+        'vb_tieude' => $rowVanBan['vb_tieude'],
+    );
+}
+/* --- End Truy vấn dữ liệu Văn bản --- */
+
 // 2. Nếu người dùng có bấm nút Đăng ký thì thực thi câu lệnh UPDATE
 if (isset($_POST['btnSave'])) {
     // Lấy dữ liệu người dùng hiệu chỉnh gởi từ REQUEST POST
@@ -43,6 +67,12 @@ if (isset($_POST['btnSave'])) {
     $vb_ngayky = $_POST['vb_ngayky'];
     $vb_ngayhieuluc = empty($_POST['vb_ngayhieuluc']) ? 'NULL' : "'" . $_POST['vb_ngayhieuluc'] . "'";
     $vb_taptin_dinhkem = "";
+    $vb_lienquan = $_POST['vb_lienquan'];
+    if(empty($vb_lienquan)) {
+        $vb_lienquan_str = 'NULL';
+    } else {
+        $vb_lienquan_str = "'" . implode(',', $vb_lienquan) . "'";
+    }
     // dd($vb_so,
     //     $vb_tieude,
     //     $vb_trichyeu,
@@ -52,6 +82,8 @@ if (isset($_POST['btnSave'])) {
     //     $vb_ngayky,
     //     $vb_ngayhieuluc,
     //     $vb_taptin_dinhkem,
+    //     $vb_lienquan,
+    //     $vb_lienquan_str
     // );
 
     // Kiểm tra ràng buộc dữ liệu (Validation)
@@ -99,8 +131,8 @@ if (isset($_POST['btnSave'])) {
         }
 
         // Câu lệnh INSERT
-        $sql = "INSERT INTO vanban (vb_so, vb_tieude, vb_trichyeu, vb_phongban_banhanh_id, vb_nguoiky_hoten, vb_nguoiky_chucdanh, vb_ngayky, vb_ngayhieuluc, vb_taptin_dinhkem)
-                VALUES ('$vb_so', '$vb_tieude', '$vb_trichyeu', $vb_phongban_banhanh_id, '$vb_nguoiky_hoten', '$vb_nguoiky_chucdanh', '$vb_ngayky', $vb_ngayhieuluc, '$vb_taptin_dinhkem')";
+        $sql = "INSERT INTO vanban (vb_so, vb_tieude, vb_trichyeu, vb_phongban_banhanh_id, vb_nguoiky_hoten, vb_nguoiky_chucdanh, vb_ngayky, vb_ngayhieuluc, vb_taptin_dinhkem, vb_lienquan)
+                VALUES ('$vb_so', '$vb_tieude', '$vb_trichyeu', $vb_phongban_banhanh_id, '$vb_nguoiky_hoten', '$vb_nguoiky_chucdanh', '$vb_ngayky', $vb_ngayhieuluc, '$vb_taptin_dinhkem', $vb_lienquan_str)";
 
         // Thực thi INSERT
         mysqli_query($conn, $sql);
@@ -115,5 +147,6 @@ if (isset($_POST['btnSave'])) {
     // Yêu cầu `Twig` vẽ giao diện được viết trong file `backend/vanban/create.html.twig`
     echo $twig->render('backend/vanban/create.html.twig', [
         'dataPhongBan' => $dataPhongBan,
+        'dataVanBan' => $dataVanBan,
     ]);
 }
