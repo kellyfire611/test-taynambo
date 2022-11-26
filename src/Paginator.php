@@ -62,6 +62,7 @@ class Paginator
         }
         $rs             = $this->conn->query($query);
 
+        $results = [];
         while ($row = $rs->fetch_assoc()) {
             $results[]  = $row;
         }
