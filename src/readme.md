@@ -1,42 +1,67 @@
-# Twig
-- `Twig` là một Template Engine nổi tiếng của Symfony.
-- Cú pháp của `Twig` khá dễ học. Về cơ bản chỉ có các thành phần sau:
-    - Sử dụng `{{ variable }}` để render giá trị thay thế cho dòng lệnh thường thấy của php thuần `<?php echo $variable; ?>`
-    - Sử dụng `{% logic %}` cho các xử lý dạng logic `if; loop; while`
-    - Sử dụng `{# comment #}` cho các ghi chú (comments)
-    - ...
-- Tài liệu tham khảo:
-    - Cú pháp sử dụng Twig version 2x: [https://twig.symfony.com/doc/2.x/templates.html](https://twig.symfony.com/doc/2.x/templates.html)
+# Tác giả:
+- Đỗ Thị Minh Mẫn
 
-# 1.Cài đặt TWIG
-## Step 1: Cài đặt `composer` (công cụ quản lý các gói package PHP):
-- Download: [https://getcomposer.org/download/](https://getcomposer.org/download/)
-- Chọn Window Installer để cài đặt.
+# Các chương trình cần có để chạy source code
+- XAMPP: phiên bản PHP 7+ trở lên. Link download: https://www.apachefriends.org/download.html
+- Visual Studio Code IDE: chương trình dùng để viết code lập trình PHP. Link download: https://code.visualstudio.com/download
 
-## Step 2: Cài đặt thư viện `twig/twig` thông qua `composer`:
-- Chạy câu lệnh sau:
+# Hướng dẫn Setup Source code
+## Download và giải nén source code
+- Sau khi tải file nén `test-taynambo-dothiminhman.zip` thì giải nén vào thư mục phù hợp trên máy tính cá nhân.
+- Ví dụ: giải nén thành `C:\xampp\htdocs\test-taynambo-main`
+
+## Setup môi trường chạy code PHP
+### Step 1: tạo host ảo (Virtual host) cho XAMPP
+- Hiệu chỉnh file `C:xampp\apache\conf\extra\httpd-vhosts.conf`
+- Bổ sung đoạn code sau:
 ```
-composer require twig/twig
-```
-- Cấu trúc thư mục sau khi cài đặt:
-```
-+---php
-|   \---twig                    <- Đây là thư mục gốc của dự án, các bạn có thể đặt tên các bạn...
-|       \---vendor
-|           +---composer
-|           +---symfony
-|           +---twig
-|           +---twig
-|           \---autoload.php
-|       +---composer.json
-|       \---composer.lock
+<VirtualHost *:80>
+    #Thay thế bằng email của Quản trị web của bạn
+	ServerAdmin webmaster@dtmman.taynambo
+	
+	#Thay thế bằng đường dẫn đến source của bạn
+    DocumentRoot "C:/xampp/htdocs/test-taynambo-main/src"
+	
+	#Thay thế bằng tên trang web bạn mong muốn
+    ServerName  dtmman.taynambo
+	
+	#Thay thế bằng tên file log bạn mong muốn
+    ErrorLog "logs/dtmman.taynambo-error.log"
+    CustomLog "logs/dtmman.taynambo-access.log" common
+	
+	#Thay thế bằng đường dẫn đến source của bạn
+    <Directory "C:/xampp/htdocs/test-taynambo-main/src">
+        Options FollowSymLinks
+        AllowOverride All
+        DirectoryIndex index.php
+        Require all granted
+    </Directory>
+</VirtualHost>
 ```
 
-## Step 3: Cài đặt thư viện `symfony/var-dumper` thông qua `composer`:
-- Chạy câu lệnh sau:
+### Step 2: add host cho Window
+- Hiệu chỉnh file `C:\Windows\System32\drivers\etc\hosts`
+- Lưu ý: để hiệu chỉnh file hệ thống, bạn cần quyền Administrator
+- Bổ sung dòng code sau
 ```
-composer require symfony/var-dumper
+127.0.0.1		dtmman.taynambo
 ```
 
-# Bài học tiếp theo
-[Bài học 1](./readme-lession1.md)
+## Cấu hình database
+### Step 3: Restore database
+- Khởi động dịch vụ MySQL của XAMPP
+- Chạy file script `C:\xampp\htdocs\test-taynambo-main\db\db_test_taynambo.sql` để khôi phục database
+
+### Step 4: Cấu hình thông tin kết nối database từ PHP
+- Mở file code `C:\xampp\htdocs\test-taynambo-main\src\config.php`
+- Tiến hành hiệu chỉnh thông tin tài khoản kết nối phù hợp
+```
+public static $DB_CONNECTION_HOST           = 'localhost';
+public static $DB_CONNECTION_USERNAME       = 'root';
+public static $DB_CONNECTION_PASSWORD       = '';
+public static $DB_CONNECTION_DATABASE_NAME  = 'test_taynambo';
+```
+
+# Test hệ thống
+- Sử dụng trình duyệt web (Chrome, Cốc cốc, Firefox, Safari...)
+- Chạy URL: http://dtmman.taynambo/
