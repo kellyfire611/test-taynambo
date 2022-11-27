@@ -74,10 +74,10 @@ if (isset($_POST['btnSave'])) {
     $vb_phongban_banhanh_id = $_POST['vb_phongban_banhanh_id'];
     $vb_nguoiky_hoten = $_POST['vb_nguoiky_hoten'];
     $vb_nguoiky_chucdanh = $_POST['vb_nguoiky_chucdanh'];
-    $vb_ngayky = $_POST['vb_ngayky'];
-    $vb_ngayhieuluc = $_POST['vb_ngayhieuluc'];
+    $vb_ngayky = empty($_POST['vb_ngayky']) ? 'NULL' : "'" . $_POST['vb_ngayky'] . "'";
+    $vb_ngayhieuluc = empty($_POST['vb_ngayhieuluc']) ? 'NULL' : "'" . $_POST['vb_ngayhieuluc'] . "'";
     $vb_taptin_dinhkem = $vanbanRow['vb_taptin_dinhkem'];
-    $vb_lienquan = $_POST['vb_lienquan'];
+    $vb_lienquan = isset($_POST['vb_lienquan']) ? $_POST['vb_lienquan'] : [];
     if(empty($vb_lienquan)) {
         $vb_lienquan_str = 'NULL';
     } else {
@@ -155,8 +155,8 @@ if (isset($_POST['btnSave'])) {
             vb_phongban_banhanh_id=$vb_phongban_banhanh_id,
             vb_nguoiky_hoten='$vb_nguoiky_hoten',
             vb_nguoiky_chucdanh='$vb_nguoiky_chucdanh',
-            vb_ngayky='$vb_ngayky',
-            vb_ngayhieuluc='$vb_ngayhieuluc',
+            vb_ngayky=$vb_ngayky,
+            vb_ngayhieuluc=$vb_ngayhieuluc,
             vb_taptin_dinhkem='$vb_taptin_dinhkem',
             vb_lienquan=$vb_lienquan_str
         WHERE vb_id=$vb_id";

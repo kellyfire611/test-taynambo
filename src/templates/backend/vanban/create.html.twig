@@ -111,6 +111,47 @@ Thêm mới Văn bản
         });
         $('#vb_lienquan').select2();
 
+        $.validator.addMethod("validate_cannot_number", function (value, element, param) {
+            var detectNumber = /\d/gmi.test(value);
+            if(detectNumber) {
+                return false;
+            } else {
+                return true;
+            }
+        }, "Không được nhập ký tự số.");
+
+        $("#frmCreate").on("submit", function(e) {
+            var dtNgayKy;
+            var dtNgayHieuLuc;
+            var ngayKy = $('#vb_ngayky').val();
+            var ngayHieuLuc = $('#vb_ngayhieuluc').val();
+            if(ngayKy && ngayKy != "") {
+                dtNgayKy = new Date(ngayKy);
+            }
+            if(ngayHieuLuc && ngayHieuLuc != "") {
+                dtNgayHieuLuc = new Date(ngayHieuLuc);
+            }
+
+            // Validate
+            if(dtNgayKy > dtNgayHieuLuc) {
+                Swal.fire(
+                    'Ngày không chính xác!',
+                    '<b>Ngày ký</b> không thể LỚN HƠN <b>Ngày hiệu lực</b>.<br />Vui lòng kiểm tra lại.',
+                    'warning'
+                );
+                e.preventDefault();
+            } else if(dtNgayHieuLuc < dtNgayKy) {
+                Swal.fire(
+                    'Ngày không chính xác!',
+                    '<b>Ngày hiệu lực</b> không thể NHỎ HƠN <b>Ngày ký</b>.<br />Vui lòng kiểm tra lại.',
+                    'warning'
+                );
+                e.preventDefault();
+            }
+            
+            e.target.reportValidity();
+        });
+
         $("#frmCreate").validate({
             rules: {
                 vb_so: {
@@ -131,10 +172,12 @@ Thêm mới Văn bản
                     required: true,
                 },
                 vb_nguoiky_hoten: {
-                    maxlength: 500
+                    maxlength: 500,
+                    validate_cannot_number: "true"
                 },
                 vb_nguoiky_chucdanh: {
-                    maxlength: 500
+                    maxlength: 500,
+                    validate_cannot_number: "true"
                 }
             },
             messages: {
@@ -154,11 +197,16 @@ Thêm mới Văn bản
                     required: "Vui lòng chọn Phòng/Ban ban hành"
                 },
                 vb_nguoiky_hoten: {
-                    maxlength: "Họ tên người ký văn bản không được vượt quá 500 ký tự"
+                    maxlength: "Họ tên người ký văn bản không được vượt quá 500 ký tự",
+                    validate_cannot_number: "Họ tên không được nhập ký tự số"
                 },
                 vb_nguoiky_chucdanh: {
-                    maxlength: "Chức danh người ký văn bản không được vượt quá 500 ký tự"
+                    maxlength: "Chức danh người ký văn bản không được vượt quá 500 ký tự",
+                    validate_cannot_number: "Họ tên không được nhập ký tự số"
                 },
+                vb_ngayky: {
+                    validateNgayKy: "Ngày ký không được lớn hơn Ngày ban hành."
+                }
             },
             errorElement: "em",
             errorPlacement: function (error, element) {

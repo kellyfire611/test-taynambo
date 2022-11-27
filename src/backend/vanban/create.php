@@ -64,10 +64,10 @@ if (isset($_POST['btnSave'])) {
     $vb_phongban_banhanh_id = $_POST['vb_phongban_banhanh_id'];
     $vb_nguoiky_hoten = $_POST['vb_nguoiky_hoten'];
     $vb_nguoiky_chucdanh = $_POST['vb_nguoiky_chucdanh'];
-    $vb_ngayky = $_POST['vb_ngayky'];
+    $vb_ngayky = empty($_POST['vb_ngayky']) ? 'NULL' : "'" . $_POST['vb_ngayky'] . "'";
     $vb_ngayhieuluc = empty($_POST['vb_ngayhieuluc']) ? 'NULL' : "'" . $_POST['vb_ngayhieuluc'] . "'";
     $vb_taptin_dinhkem = "";
-    $vb_lienquan = $_POST['vb_lienquan'];
+    $vb_lienquan = isset($_POST['vb_lienquan']) ? $_POST['vb_lienquan'] : [];
     if(empty($vb_lienquan)) {
         $vb_lienquan_str = 'NULL';
     } else {
@@ -103,7 +103,7 @@ if (isset($_POST['btnSave'])) {
     } else { // Nếu không có lỗi dữ liệu sẽ thực thi câu lệnh SQL
 
         // Nếu người dùng có chọn file để upload
-        if (isset($_FILES['vb_taptin_dinhkem']))
+        if (isset($_FILES['vb_taptin_dinhkem']) && !empty($_FILES['vb_taptin_dinhkem']['name']))
         {
             // Đường dẫn để chứa thư mục upload trên ứng dụng web của chúng ta. Các bạn có thể tùy chỉnh theo ý các bạn.
             // Ví dụ: các file upload sẽ được lưu vào thư mục ../../assets/uploads
@@ -132,7 +132,7 @@ if (isset($_POST['btnSave'])) {
 
         // Câu lệnh INSERT
         $sql = "INSERT INTO vanban (vb_so, vb_tieude, vb_trichyeu, vb_phongban_banhanh_id, vb_nguoiky_hoten, vb_nguoiky_chucdanh, vb_ngayky, vb_ngayhieuluc, vb_taptin_dinhkem, vb_lienquan)
-                VALUES ('$vb_so', '$vb_tieude', '$vb_trichyeu', $vb_phongban_banhanh_id, '$vb_nguoiky_hoten', '$vb_nguoiky_chucdanh', '$vb_ngayky', $vb_ngayhieuluc, '$vb_taptin_dinhkem', $vb_lienquan_str)";
+                VALUES ('$vb_so', '$vb_tieude', '$vb_trichyeu', $vb_phongban_banhanh_id, '$vb_nguoiky_hoten', '$vb_nguoiky_chucdanh', $vb_ngayky, $vb_ngayhieuluc, '$vb_taptin_dinhkem', $vb_lienquan_str)";
 
         // Thực thi INSERT
         mysqli_query($conn, $sql);

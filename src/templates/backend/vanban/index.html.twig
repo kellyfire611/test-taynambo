@@ -111,7 +111,7 @@ Danh sách Văn bản
                     <li><b>Trích yếu: </b>{{ vanban.vb_trichyeu }}</li>
                     <li><b>Phòng/Ban ban hành: </b>{{ vanban.pb_ten }}</li>
                     <li><b>Người ký - chức danh: </b>{{ vanban.vb_nguoiky_hoten }} - {{ vanban.vb_nguoiky_chucdanh }}</li>
-                    <li><b>Ngày ký: </b>{{ vanban.vb_ngayky | date('d/m/Y') }}</li>
+                    <li><b>Ngày ký: </b>{{ vanban.vb_ngayky is empty ? "" : vanban.vb_ngayky | date('d/m/Y') }}</li>
                     <li><b>Ngày hiệu lực: </b>{{ vanban.vb_ngayhieuluc is empty ? "" : vanban.vb_ngayhieuluc | date('d/m/Y H:i:s') }}</li>
                     <li><b>Tập tin đính kèm: </b>
                         <a href="/assets/uploads/vanban/{{ vanban.vb_taptin_dinhkem }}" target="_blank">{{ vanban.vb_taptin_dinhkem }}</a>
