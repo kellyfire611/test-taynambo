@@ -87,9 +87,9 @@ Sửa Văn bản
         <select class="form-control" id="vb_lienquan" name="vb_lienquan[]" multiple="multiple">
             {% for vanban in dataVanBan %}
                 {% if vanban.vb_id in vanbanRow.vb_lienquan_arr %}
-                <option selected value="{{ vanban.vb_id }}">{{ vanban.vb_tieude }}</option>
+                <option selected value="{{ vanban.vb_id }}">{{ vanban.vb_so }} - {{ vanban.vb_tieude }}</option>
                 {% else %}
-                <option value="{{ vanban.vb_id }}">{{ vanban.vb_tieude }}</option>
+                <option value="{{ vanban.vb_id }}">{{ vanban.vb_so }} - {{ vanban.vb_tieude }}</option>
                 {% endif %}
             {% endfor %}
         </select>

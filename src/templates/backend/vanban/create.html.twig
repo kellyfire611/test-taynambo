@@ -81,7 +81,7 @@ Thêm mới Văn bản
         <label for="vb_lienquan">Các văn bản cũ liên quan</label>
         <select class="form-control" id="vb_lienquan" name="vb_lienquan[]" multiple="multiple">
             {% for vanban in dataVanBan %}
-                <option value="{{ vanban.vb_id }}">{{ vanban.vb_tieude }}</option>
+                <option value="{{ vanban.vb_id }}">{{ vanban.vb_so }} - {{ vanban.vb_tieude }}</option>
             {% endfor %}
         </select>
     </div>

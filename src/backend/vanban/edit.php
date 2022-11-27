@@ -46,7 +46,7 @@ $vanbanRow['vb_lienquan_arr'] = explode(',', $vanbanRow["vb_lienquan"]);
    --- 
 */
 // Chuẩn bị câu truy vấn
-$sqlVanBan = "select * from `vanban`";
+$sqlVanBan = "select * from `vanban` WHERE vb_id != $vb_id";
 
 // Thực thi câu truy vấn SQL để lấy về dữ liệu
 $resultVanBan = mysqli_query($conn, $sqlVanBan);
