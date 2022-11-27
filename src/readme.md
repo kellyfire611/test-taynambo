@@ -14,6 +14,10 @@
     - SweetAlert2 (tạo modal hiển thị thông báo)
     - FlatPicker (tạo control chọn Ngày tháng)
     - Select2 (tạo control chọn các Văn bản liên quan)
+- Các thư viện PHP sử dụng:
+    - Sử dụng Composer để quản lý các thư viện
+    - TWIG template 2+
+    - Symfony Dump and Die (hàm dd dùng để debug)
 
 # Các chương trình cần có để chạy source code
 - XAMPP: phiên bản PHP 7+ trở lên. Link download: https://www.apachefriends.org/download.html
