@@ -1,6 +1,20 @@
 # Tác giả:
 - Đỗ Thị Minh Mẫn
 
+# Kỹ thuật sử dụng trong chương trình
+- PHP 7+
+- MySQL 5+
+- Sử dụng Template Twig PHP để tạo bố cục giao diện
+- Giao diện sử dụng:
+    - Bootstrap 4
+    - Feather ICON (các icon)
+    - FontAwesome 4
+    - JQuery
+    - JQuery Validation (thư viện bắt ràng buộc trên giao diện)
+    - SweetAlert2 (tạo modal hiển thị thông báo)
+    - FlatPicker (tạo control chọn Ngày tháng)
+    - Select2 (tạo control chọn các Văn bản liên quan)
+
 # Các chương trình cần có để chạy source code
 - XAMPP: phiên bản PHP 7+ trở lên. Link download: https://www.apachefriends.org/download.html
 - Visual Studio Code IDE: chương trình dùng để viết code lập trình PHP. Link download: https://code.visualstudio.com/download
