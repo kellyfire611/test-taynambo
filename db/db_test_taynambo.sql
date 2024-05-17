@@ -35,7 +35,8 @@ INSERT INTO `phongban` (`pb_id`, `pb_ma`, `pb_ten`, `pb_diengiai`) VALUES
 	(4, 'PKD', 'Phòng kinh doanh', 'Phòng kinh doanh'),
 	(5, 'PKDTH', 'Phòng kinh doanh tổng hợp', 'Phòng kinh doanh tổng hợp'),
 	(6, 'PCNTTTDH', 'Phòng công nghệ thông tin tự động hóa', 'Phòng làm về CNTT'),
-	(7, 'PTCKT', 'Phòng tài chính kế toán', 'Phòng tài chính kế toán');
+	(7, 'PTCKT', 'Phòng tài chính kế toán', 'Phòng tài chính kế toán'),
+  (8, 'BGĐ', 'BAN GIÁM ĐỐC', 'BAN GIÁM ĐỐC CÔNG TY');
 /*!40000 ALTER TABLE `phongban` ENABLE KEYS */;
 
 -- Dumping structure for table test_taynambo.vanban
@@ -62,6 +63,47 @@ INSERT INTO `vanban` (`vb_id`, `vb_so`, `vb_tieude`, `vb_trichyeu`, `vb_phongban
 	(1, '1521/PLXTNB-KD', 'QUYẾT ĐỊNH: Về việc giá bán lẻ xăng dầu', '- Căn cứ Luật Doanh nghiệp số 59/2020/QH14 có hiệu lực thi hành từ ngày 01/01/2021.\r\n- Căn cứ Điều lệ tổ chức và hoạt động của Công ty TNHH MTV xăng dầu Tây Nam Bộ được Hội đồng quản trị Tập đoàn xăng dầu Việt nam phê duyệt tại quyết định số 649/PLX-QĐ-HĐQT ngày 03/11/2022.\r\n- Căn cứ Quyết định số 678/PLX-QĐ-TGĐ ngày 11/11/2022 của Tập đoàn xăng dầu Việt nam về việc quy định giá bán lẻ các mặt hàng xăng dầu áp dụng từ 15h00 ngày 11/11/2022.', 4, 'Hồ Phú Triệu', 'PHÓ GIÁM ĐỐC', '2022-11-11 00:00:00', '2022-11-11 15:00:00', '20221126214130_1521 PLXTNB-QĐ Vv giá bán lẻ xăng dầu.pdf', NULL),
 	(2, '1202/PLXTNB-KTXD', 'V/v Lập lại barem bể K08 và K13 của Tổng kho Xăng dầu Miền Tây', 'Kính gửi: Tập toàn Xăng dầu Việt Nam\r\nCăn cứ kế hoạch bảo dưỡng lại hai bể K08 và K13 của Tổng kho xăng dầu Miền Tây đã được Tập đoàn phê duyệt. Trong tháng 07& 08/2022 Công ty đã thực hiện hút vét, súc rừa 02 bể K08 và K13 để bàn giao lại bể trống cho đơn vị thi công tiến hành công tác bão dưỡng và sơn lại bể.', 2, 'Nguyễn Ngọc Trọng', 'PHÓ GIÁM ĐỐC', '2022-08-26 00:00:00', NULL, '20221126214152_1202 PLXTNB Vv Lập lại barem bể K08 và K13 của Tổng kho Xăng dầu Miền Tây.pdf', NULL);
 /*!40000 ALTER TABLE `vanban` ENABLE KEYS */;
+
+-- Dumping structure for table test_taynambo.chucvu
+CREATE TABLE IF NOT EXISTS `chucvu` (
+  `cv_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `cv_ma` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cv_ten` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cv_diengiai` varchar(2500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`cv_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `chucvu` (`cv_id`, `cv_ma`, `cv_ten`, `cv_diengiai`) VALUES
+   (1,'CT','CHỦ TỊCH','CHỦ TỊCH CÔNG TY TNHH MTV XĂNG DẦU TÂY NAM BỘ'),
+  (2,'GĐ','GIÁM ĐỐC','GIÁM ĐỐC CÔNG TY TNHH MTV XĂNG DẦU TÂY NAM BỘ'),
+ (3,'PGĐ','PHÓ GIÁM ĐỐC','PHÓ GIÁM ĐỐC CÔNG TY TNHH MTV XĂNG DẦU TÂY NAM BỘ'),
+ (4,'CTCĐ','CHỦ TỊCH CÔNG ĐOÀN','CHỦ TỊCH CÔNG ĐOÀN CÔNG TY TNHH MTV XĂNG DẦU TÂY NAM BỘ'),
+ (5,'CV','CHUYÊN VIÊN','CHUYÊN VIÊN VĂN PHÒNG CÔNG TY TNHH MTV XĂNG DẦU TÂY NAM BỘ');
+
+
+
+-- Dumping structure for table test_taynambo.nhanvien
+CREATE TABLE IF NOT EXISTS `nhanvien` (
+  `nv_id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `nv_ma` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nv_hoten` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nv_gioitinh` varchar(2500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nv_phongban_id` bigint(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nv_chucvu_id` bigint(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`nv_id`) USING BTREE,
+--   KEY `FK_nhanvien_phongban` (`nv_phongban_id`),
+--   CONSTRAINT `FK_nhanvien_phongban` FOREIGN KEY (`nv_phongban_id`) REFERENCES `phongban` (`pb_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+-- KEY `FK_nhanvien_chucvu` (`nv_chucvu_id`),
+--   CONSTRAINT `FK_nhanvien_chucvu` FOREIGN KEY (`nv_chucvu_id`) REFERENCES `chucvu` (`cv_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table test_taynambo.nhanvien: ~20 rows (approximately)
+/*!40000 ALTER TABLE `nhanvien` DISABLE KEYS */;
+INSERT INTO `nhanvien` (`nv_id`, `nv_ma`, `nv_hoten`, `nv_gioitinh`, `nv_phongban_id`, `nv_chucvu_id`) VALUES 
+ (1,'731mandtm','ĐỖ THỊ MINH MẪN','NỮ',6,5),
+(2,'731sonvt','VÕ THÁI SƠN','NAM',8,1),
+(3,'731chinhnd','NGUYỄN ĐĂNG CHINH','NAM',8,2);
+/*!40000 ALTER TABLE `phongban` ENABLE KEYS */;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IFNULL(@OLD_FOREIGN_KEY_CHECKS, 1) */;

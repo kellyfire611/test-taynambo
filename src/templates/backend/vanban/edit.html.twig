@@ -48,7 +48,7 @@ Sửa Văn bản
     <div class="form-group">
         <label for="vb_phongban_banhanh_id">Phòng/Ban ban hành</label>
         <select name="vb_phongban_banhanh_id" class="form-control">
-        {% for phongban in dataPhongBan %}
+        {% for phongban in dataPhongban.data %}
             {% if phongban.pb_id == vanbanRow.vb_phongban_banhanh_id %}
                 <option selected value="{{ phongban.pb_id }}">{{ phongban.pb_ten }}</option>
             {% else %}
@@ -59,12 +59,28 @@ Sửa Văn bản
     </div>
     <div class="form-row">
         <div class="form-group col-6">
-            <label for="vb_nguoiky_hoten">Người ký tên Văn bản</label>
-            <input type="text" class="form-control" id="vb_nguoiky_hoten" name="vb_nguoiky_hoten" placeholder="Người ký tên Văn bản" value="{{ vanbanRow.vb_nguoiky_hoten }}">
+            <label for="vb_nguoiky_nhanvien_id">Người ký tên Văn bản</label>
+            <select class="form-control" id="vb_nguoiky_nhanvien_id" name="vb_nguoiky_nhanvien_id">
+                {% for nv in dataNhanvien.data %}
+                    {% if vanbanRow.vb_nguoiky_nhanvien_id == nv.nv_id %}
+                        <option value="{{ nv.nv_id }}" selected>{{ nv.nv_hoten }}</option>
+                    {% else %}
+                        <option value="{{ nv.nv_id }}">{{ nv.nv_hoten }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
         </div>
         <div class="form-group col-6">
-            <label for="vb_nguoiky_chucdanh">Chức danh Người ký tên Văn bản</label>
-            <input type="text" class="form-control" id="vb_nguoiky_chucdanh" name="vb_nguoiky_chucdanh" placeholder="Chức danh Người ký tên Văn bản" value="{{ vanbanRow.vb_nguoiky_chucdanh }}">
+            <label for="vb_nguoiky_chucvu_id">Chức danh Người ký tên Văn bản</label>
+            <select class="form-control" id="vb_nguoiky_chucvu_id" name="vb_nguoiky_chucvu_id">
+                {% for cv in dataChucvu.data %}
+                    {% if vanbanRow.vb_nguoiky_chucvu_id == cv.cv_id %}
+                        <option value="{{ cv.cv_id }}" selected>{{ cv.cv_ten }}</option>
+                    {% else %}
+                        <option value="{{ cv.cv_id }}">{{ cv.cv_ten }}</option>
+                    {% endif %}
+                {% endfor %}
+            </select>
         </div>
     </div>
     <div class="form-row">

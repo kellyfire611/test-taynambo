@@ -1,0 +1,121 @@
+{# Kế thừa layout backend #}
+{% extends "backend/layouts/layout.html.twig" %}
+
+{# Nội dung trong block title #}
+{% block title %}
+Sửa Chức vụ
+{% endblock %}
+{# End Nội dung trong block title #}
+
+{# Nội dung trong block headline #}
+{% block headline %}
+Sửa Chức vụ
+{% endblock %}
+{# End Nội dung trong block headline #}
+
+{# Nội dung trong block content #}
+{% block content %}
+
+{% if errors %}
+<div id="errors-container" class="alert alert-danger face" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <ul>
+        {% for fields in errors %}
+            {% for field in fields %}
+            <li>{{ field.msg }}</li>
+            {% endfor %}
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<form name="frmEdit" id="frmEdit" method="post" action="/backend/chucvu/edit.php?id={{ chucvuRow.cv_id }}">
+    <div class="form-group">
+        <label for="cv_ma">Mã Chức vụ</label>
+        <input type="text" class="form-control" id="cv_ma" name="cv_ma" placeholder="Mã Chức vụ" value="{{ chucvuRow.cv_ma }}">
+    </div>
+    <div class="form-group">
+        <label for="cv_ten">Tên Chức vụ</label>
+        <input type="text" class="form-control" id="cv_ten" name="cv_ten" placeholder="Tên Chức vụ" value="{{ chucvuRow.cv_ten }}">
+    </div>
+    <div class="form-group">
+        <label for="cv_diengiai">Mô tả Chức vụ</label>
+        <textarea class="form-control" id="cv_diengiai" name="cv_diengiai" rows="5">{{ chucvuRow.cv_diengiai }}</textarea>
+    </div>
+    <a class="btn btn-secondary" href="/backend/chucvu/">Quay về Danh sách</a>
+    <button class="btn btn-primary" name="btnSave">Lưu</button>
+</form>
+{% endblock %}
+{# End Nội dung trong block content #}
+
+{% block customscripts %}
+<script>
+    $(document).ready(function () {
+        $("#frmEdit").validate({
+            rules: {
+                cv_ma: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 50
+                },
+                cv_ten: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 255
+                },
+                cv_diengiai: {
+                    maxlength: 500
+                }
+            },
+            messages: {
+                cv_ma: {
+                    required: "Vui lòng nhập mã Chức vụ",
+                    minlength: "Mã Chức vụ phải có ít nhất 3 ký tự",
+                    maxlength: "Mã Chức vụ không được vượt quá 50 ký tự"
+                },
+                cv_ten: {
+                    required: "Vui lòng nhập tên Chức vụ",
+                    minlength: "Tên Chức vụ phải có ít nhất 3 ký tự",
+                    maxlength: "Tên Chức vụ không được vượt quá 255 ký tự"
+                },
+                cv_diengiai: {
+                    maxlength: "Diễn giải cho Chức vụ không được vượt quá 500 ký tự"
+                },
+            },
+            errorElement: "em",
+            errorPlacement: function (error, element) {
+                // Thêm class `invalid-feedback` cho field đang có lỗi
+                error.addClass("invalid-feedback");
+
+                if (element.prop("type") === "checkbox") {
+                    error.insertAfter(element.parent("label"));
+                } else {
+                    error.insertAfter(element);
+                }
+
+                // Thêm icon "Kiểm tra không Hợp lệ"
+                if (!element.next("span")[0]) {
+                    $("<span class='glyphicon glyphicon-remove form-control-feedback'></span>")
+                        .insertAfter(element);
+                }
+            },
+            success: function (label, element) {
+                // Thêm icon "Kiểm tra Hợp lệ"
+                if (!$(element).next("span")[0]) {
+                    $("<span class='glyphicon glyphicon-ok form-control-feedback'></span>")
+                        .insertAfter($(element));
+                }
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass("is-invalid").removeClass("is-valid");
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).addClass("is-valid").removeClass("is-invalid");
+            }
+        });
+
+    });
+</script>
+{% endblock %}

@@ -5,31 +5,22 @@ require_once __DIR__ . '/../../bootstrap.php';
 // Truy vấn database
 // 1. Include file cấu hình kết nối đến database, khởi tạo kết nối $conn
 include_once(__DIR__ . '/../../dbconnect.php');
+include_once(__DIR__ . '/../../Paginator.php');
 
-/* --- 
-   --- 2.Truy vấn dữ liệu Phòng ban 
-   --- 
-*/
-// Chuẩn bị câu truy vấn Phòng ban
-$sqlPhongBan = "select * from `phongban`";
+$sqlSelectPhongban = "SELECT * FROM `phongban`";
+$paginator = new Paginator($twig, $conn, $sqlSelectPhongban);
+$dataPhongban = $paginator->getData('all', 1);
+// dd($dataPhongban);
 
-// Thực thi câu truy vấn SQL để lấy về dữ liệu
-$resultPhongBan = mysqli_query($conn, $sqlPhongBan);
+$sqlSelectNhanvien = "SELECT * FROM `nhanvien`";
+$paginator = new Paginator($twig, $conn, $sqlSelectNhanvien);
+$dataNhanvien = $paginator->getData('all', 1);
+// dd($dataNhanvien);
 
-// Khi thực thi các truy vấn dạng SELECT, dữ liệu lấy về cần phải phân tích để sử dụng
-// Thông thường, chúng ta sẽ sử dụng vòng lặp while để duyệt danh sách các dòng dữ liệu được SELECT
-// Ta sẽ tạo 1 mảng array để chứa các dữ liệu được trả về
-$dataPhongBan = [];
-while($rowPhongBan = mysqli_fetch_array($resultPhongBan, MYSQLI_ASSOC))
-{
-    $dataPhongBan[] = array(
-        'pb_id' => $rowPhongBan['pb_id'],
-        'pb_ma' => $rowPhongBan['pb_ma'],
-        'pb_ten' => $rowPhongBan['pb_ten'],
-        'pb_diengiai' => $rowPhongBan['pb_diengiai'],
-    );
-}
-/* --- End Truy vấn dữ liệu Phòng ban --- */
+$sqlSelectChucvu = "SELECT * FROM `chucvu`";
+$paginator = new Paginator($twig, $conn, $sqlSelectChucvu);
+$dataChucvu = $paginator->getData('all', 1);
+// dd($dataChucvu);
 
 // 2. Chuẩn bị câu truy vấn $sqlSelect, lấy dữ liệu ban đầu của record cần update
 // Lấy giá trị khóa chính được truyền theo dạng QueryString Parameter key1=value1&key2=value2...
@@ -72,12 +63,14 @@ if (isset($_POST['btnSave'])) {
     $vb_tieude = $_POST['vb_tieude'];
     $vb_trichyeu = $_POST['vb_trichyeu'];
     $vb_phongban_banhanh_id = $_POST['vb_phongban_banhanh_id'];
-    $vb_nguoiky_hoten = $_POST['vb_nguoiky_hoten'];
-    $vb_nguoiky_chucdanh = $_POST['vb_nguoiky_chucdanh'];
+    $vb_nguoiky_hoten = '';
+    $vb_nguoiky_chucdanh = '';
     $vb_ngayky = empty($_POST['vb_ngayky']) ? 'NULL' : "'" . $_POST['vb_ngayky'] . "'";
     $vb_ngayhieuluc = empty($_POST['vb_ngayhieuluc']) ? 'NULL' : "'" . $_POST['vb_ngayhieuluc'] . "'";
     $vb_taptin_dinhkem = $vanbanRow['vb_taptin_dinhkem'];
     $vb_lienquan = isset($_POST['vb_lienquan']) ? $_POST['vb_lienquan'] : [];
+    $vb_nguoiky_nhanvien_id = $_POST['vb_nguoiky_nhanvien_id'];
+    $vb_nguoiky_chucvu_id = $_POST['vb_nguoiky_chucvu_id'];
     if(empty($vb_lienquan)) {
         $vb_lienquan_str = 'NULL';
     } else {
@@ -93,6 +86,8 @@ if (isset($_POST['btnSave'])) {
     //     $vb_ngayhieuluc,
     //     $vb_taptin_dinhkem,
     //     $vb_lienquan_str,
+    //     $vb_nguoiky_nhanvien_id,
+    //     $vb_nguoiky_chucvu_id
     // );
 
     // Kiểm tra ràng buộc dữ liệu (Validation)
@@ -158,7 +153,9 @@ if (isset($_POST['btnSave'])) {
             vb_ngayky=$vb_ngayky,
             vb_ngayhieuluc=$vb_ngayhieuluc,
             vb_taptin_dinhkem='$vb_taptin_dinhkem',
-            vb_lienquan=$vb_lienquan_str
+            vb_lienquan=$vb_lienquan_str,
+            vb_nguoiky_nhanvien_id=$vb_nguoiky_nhanvien_id,
+            vb_nguoiky_chucvu_id=$vb_nguoiky_chucvu_id
         WHERE vb_id=$vb_id";
 
         // Thực thi UPDATE
@@ -173,8 +170,10 @@ if (isset($_POST['btnSave'])) {
 } else {
     // Yêu cầu `Twig` vẽ giao diện được viết trong file `backend/vanban/edit.html.twig`
     echo $twig->render('backend/vanban/edit.html.twig', [
-        'dataPhongBan' => $dataPhongBan,
+        'dataPhongban' => $dataPhongban,
         'dataVanBan' => $dataVanBan,
         'vanbanRow' => $vanbanRow,
+        'dataNhanvien' => $dataNhanvien,
+        'dataChucvu' => $dataChucvu
     ]);
 }

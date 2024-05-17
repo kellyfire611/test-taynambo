@@ -1,4 +1,3 @@
-# Tác giả:
 - Đỗ Thị Minh Mẫn
 
 # Kỹ thuật sử dụng trong chương trình

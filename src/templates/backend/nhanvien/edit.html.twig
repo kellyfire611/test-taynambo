@@ -1,0 +1,171 @@
+{# Kế thừa layout backend #}
+{% extends "backend/layouts/layout.html.twig" %}
+
+{# Nội dung trong block title #}
+{% block title %}
+Sửa Nhân viên
+{% endblock %}
+{# End Nội dung trong block title #}
+
+{# Nội dung trong block headline #}
+{% block headline %}
+Sửa Nhân viên
+{% endblock %}
+{# End Nội dung trong block headline #}
+
+{# Nội dung trong block content #}
+{% block content %}
+
+{% if errors %}
+<div id="errors-container" class="alert alert-danger face" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <ul>
+        {% for fields in errors %}
+            {% for field in fields %}
+            <li>{{ field.msg }}</li>
+            {% endfor %}
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<form name="frmEdit" id="frmEdit" method="post" action="/backend/nhanvien/edit.php?id={{ nhanvienRow.nv_id }}">
+    <div class="form-group">
+        <label for="nv_ma">Mã Nhân viên</label>
+        <input type="text" class="form-control" id="nv_ma" name="nv_ma" placeholder="Mã Nhân viên" value="{{ nhanvienRow.nv_ma }}">
+    </div>
+    <div class="form-group">
+        <label for="nv_hoten">Tên Nhân viên</label>
+        <input type="text" class="form-control" id="nv_hoten" name="nv_hoten" placeholder="Tên Nhân viên" value="{{ nhanvienRow.nv_hoten }}">
+    </div>
+    <div class="form-group">
+        <label for="nv_gioitinh">Giới tính Nhân viên</label>
+        {% if nhanvienRow.nv_gioitinh == 'Nam' %}
+        <div class="form-check">
+            <input class="form-check-input" type="radio" id="nv_gioitinh_1" name="nv_gioitinh" value="Nam" checked>
+            <label class="form-check-label" for="nv_gioitinh_1">
+                Nam
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" id="nv_gioitinh_2" name="nv_gioitinh" value="Nữ">
+            <label class="form-check-label" for="nv_gioitinh_2">
+                Nữ
+            </label>
+        </div>
+        {% else %}
+        <div class="form-check">
+            <input class="form-check-input" type="radio" id="nv_gioitinh_1" name="nv_gioitinh" value="Nam">
+            <label class="form-check-label" for="nv_gioitinh_1">
+                Nam
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" id="nv_gioitinh_2" name="nv_gioitinh" value="Nữ" checked>
+            <label class="form-check-label" for="nv_gioitinh_2">
+                Nữ
+            </label>
+        </div>
+        {% endif %}
+    </div>
+    <div class="form-group">
+        <label for="nv_phongban_id">Phòng ban</label>
+        <select class="form-control" id="nv_phongban_id" name="nv_phongban_id">
+            {% for pb in dataPhongban.data %}
+                {% if nhanvienRow.nv_phongban_id == pb.pb_id %}
+                    <option value="{{ pb.pb_id }}" selected>{{ pb.pb_ten }}</option>
+                {% else %}
+                    <option value="{{ pb.pb_id }}">{{ pb.pb_ten }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="nv_chucvu_id">Chức vụ</label>
+        <select class="form-control" id="nv_chucvu_id" name="nv_chucvu_id">
+            {% for cv in dataChucvu.data %}
+                {% if nhanvienRow.nv_chucvu_id == cv.cv_id %}
+                    <option value="{{ cv.cv_id }}" selected>{{ cv.cv_ten }}</option>
+                {% else %}
+                    <option value="{{ cv.cv_id }}">{{ cv.cv_ten }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+    <a class="btn btn-secondary" href="/backend/nhanvien/">Quay về Danh sách</a>
+    <button class="btn btn-primary" name="btnSave">Lưu</button>
+</form>
+{% endblock %}
+{# End Nội dung trong block content #}
+
+{% block customscripts %}
+<script>
+    $(document).ready(function () {
+        $("#frmEdit").validate({
+            rules: {
+                nv_ma: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 50
+                },
+                nv_hoten: {
+                    required: true,
+                    minlength: 3,
+                    maxlength: 255
+                },
+                nv_diengiai: {
+                    maxlength: 500
+                }
+            },
+            messages: {
+                nv_ma: {
+                    required: "Vui lòng nhập mã Nhân viên",
+                    minlength: "Mã Nhân viên phải có ít nhất 3 ký tự",
+                    maxlength: "Mã Nhân viên không được vượt quá 50 ký tự"
+                },
+                nv_hoten: {
+                    required: "Vui lòng nhập tên Nhân viên",
+                    minlength: "Tên Nhân viên phải có ít nhất 3 ký tự",
+                    maxlength: "Tên Nhân viên không được vượt quá 255 ký tự"
+                },
+                nv_diengiai: {
+                    maxlength: "Diễn giải cho Nhân viên không được vượt quá 500 ký tự"
+                },
+            },
+            errorElement: "em",
+            errorPlacement: function (error, element) {
+                // Thêm class `invalid-feedback` cho field đang có lỗi
+                error.addClass("invalid-feedback");
+
+                if (element.prop("type") === "checkbox") {
+                    error.insertAfter(element.parent("label"));
+                } else {
+                    error.insertAfter(element);
+                }
+
+                // Thêm icon "Kiểm tra không Hợp lệ"
+                if (!element.next("span")[0]) {
+                    $("<span class='glyphicon glyphicon-remove form-control-feedback'></span>")
+                        .insertAfter(element);
+                }
+            },
+            success: function (label, element) {
+                // Thêm icon "Kiểm tra Hợp lệ"
+                if (!$(element).next("span")[0]) {
+                    $("<span class='glyphicon glyphicon-ok form-control-feedback'></span>")
+                        .insertAfter($(element));
+                }
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass("is-invalid").removeClass("is-valid");
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).addClass("is-valid").removeClass("is-invalid");
+            }
+        });
+
+    });
+</script>
+{% endblock %}

@@ -47,20 +47,29 @@ Thêm mới Văn bản
     </div>
     <div class="form-group">
         <label for="vb_phongban_banhanh_id">Phòng/Ban ban hành</label>
-        <select name="vb_phongban_banhanh_id" class="form-control">
-        {% for phongban in dataPhongBan %}
-            <option value="{{ phongban.pb_id }}">{{ phongban.pb_ten }}</option>
-        {% endfor %}
+        <select class="form-control" id="vb_phongban_banhanh_id" name="vb_phongban_banhanh_id">
+            {% for pb in dataPhongban.data %}
+                <option value="{{ pb.pb_id }}">{{ pb.pb_ten }}</option>
+            {% endfor %}
         </select>
     </div>
+    
     <div class="form-row">
         <div class="form-group col-6">
-            <label for="vb_nguoiky_hoten">Người ký tên Văn bản</label>
-            <input type="text" class="form-control" id="vb_nguoiky_hoten" name="vb_nguoiky_hoten" placeholder="Người ký tên Văn bản" value="{{ vb_nguoiky_hoten_oldvalue }}">
+            <label for="vb_nguoiky_nhanvien_id">Người ký tên Văn bản</label>
+            <select class="form-control" id="vb_nguoiky_nhanvien_id" name="vb_nguoiky_nhanvien_id">
+                {% for nv in dataNhanvien.data %}
+                    <option value="{{ nv.nv_id }}">{{ nv.nv_hoten }}</option>
+                {% endfor %}
+            </select>
         </div>
         <div class="form-group col-6">
-            <label for="vb_nguoiky_chucdanh">Chức danh Người ký tên Văn bản</label>
-            <input type="text" class="form-control" id="vb_nguoiky_chucdanh" name="vb_nguoiky_chucdanh" placeholder="Chức danh Người ký tên Văn bản" value="{{ vb_nguoiky_chucdanh_oldvalue }}">
+            <label for="vb_nguoiky_chucvu_id">Chức danh Người ký tên Văn bản</label>
+            <select class="form-control" id="vb_nguoiky_chucvu_id" name="vb_nguoiky_chucvu_id">
+                {% for cv in dataChucvu.data %}
+                    <option value="{{ cv.cv_id }}">{{ cv.cv_ten }}</option>
+                {% endfor %}
+            </select>
         </div>
     </div>
     <div class="form-row">
